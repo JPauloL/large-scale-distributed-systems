@@ -1,20 +1,30 @@
 import * as zmq from "zeromq";
 
-async function runClient()
+const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
+
+async function runClient(ports)
 {  
     console.log('Connecting to hello world server…');
 
     //  Socket to talk to server
     const sock = new zmq.Request();
-    sock.connect('tcp://localhost:5555');
+
+    for (let port of ports)
+    {
+        console.log(port)
+        sock.connect(`tcp://localhost:${port}`);
+    }
   
     for (let i = 0; i < 10; i++) 
         {
         console.log('Sending Hello ', i);
-        await sock.send('Hello');
+        await sock.send(`Hello ${i}`);
+
         const [result] = await sock.receive();
         console.log('Received ', result.toString(), i);
     }
 }
 
-runClient()
+const ports = process.argv.slice(2);
+
+runClient(ports.length > 0 ? ports : [5555]);

@@ -1,10 +1,10 @@
 import * as zmq from "zeromq";
 
-async function runServer()
+async function runServer(port)
 {
     const sock = new zmq.Reply();
     
-    await sock.bind('tcp://*:5555');
+    await sock.bind(`tcp://*:${port}`);
   
     for await (const [msg] of sock) 
     {
@@ -14,4 +14,6 @@ async function runServer()
     }
 }
 
-runServer()
+const args = process.argv.slice(2);
+
+runServer(args.length > 0 ? args[0] : 5555);
