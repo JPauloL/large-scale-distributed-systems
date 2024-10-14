@@ -34,11 +34,6 @@ async function runClient(port, filters)
 
     for await (const data of subscriber) 
     {
-        if (Object.keys(zip_temps).length == 0)
-        {
-            break;
-        }
-
         var pieces      = data.toString().split(" ")
         , zipcode     = parseInt(pieces[0], 10)
         , temperature = parseInt(pieces[1], 10)
@@ -58,6 +53,11 @@ async function runClient(port, filters)
 
             subscriber.unsubscribe(zipcode.toString() + " ");
             delete zip_temps[zipcode]; 
+        }
+
+        if (Object.keys(zip_temps).length == 0)
+        {
+            break;
         }
     }
 
